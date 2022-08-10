@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: convert-app
-        image: gcr.io/google-samples/hello-app:1.0
+        image: gcr.io/vivid-nomad-358913/convert:502add18e79d910b2271e37bdbfc9dd94430a79b
         ports:
         - containerPort: 8080
         resources:
