@@ -1,0 +1,5 @@
+commomLabels:
+  app: convert-app
+resources:
+- deployment.yaml
+- service.yaml
