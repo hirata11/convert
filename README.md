@@ -44,7 +44,7 @@ URL da aplicação rodando no GKE
 http://34.71.178.164/
 
 
-Se necessário dou acesso a conta do GCP para a realziação do teste
+Se necessário dou acesso a conta do GCP criada para a realziação do teste
 
 Fernando Hirata
 hirata11@hotmail.com
