@@ -20,6 +20,7 @@ env:
   GKE_ZONE: us-central1   # Add your cluster zone here.
   DEPLOYMENT_NAME: convert-app # Add your deployment name here.
   IMAGE: convert
+  TAG: $GITHUB_RUN_ID
 
 jobs:
   setup-build-publish-deploy:
@@ -69,7 +70,7 @@ jobs:
       with:
         files: '["**/deployment.yaml"]'
       env:
-        tag: ${{ env.GITHUB_RUN_ID }}
+        tag: ${{ env.TAG }}
 
     # Set up kustomize
     - name: Set up Kustomize
