@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: convert-app
-        image: "gcr.io/vivid-nomad-358913/convert:#{tag}#"
+        image: "gcr.io/vivid-nomad-358913/convert:#{GITHUB_RUN_ID}#"
         ports:
         - containerPort: 8080
         resources:
