@@ -20,7 +20,7 @@ env:
   GKE_ZONE: us-central1   # Add your cluster zone here.
   DEPLOYMENT_NAME: convert-app # Add your deployment name here.
   IMAGE: convert
-  TAG: $GITHUB_RUN_ID
+  TAG: 1.1
 
 jobs:
   setup-build-publish-deploy:
