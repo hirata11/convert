@@ -1,0 +1,19 @@
+    apiVersion: "autoscaling/v2beta1"
+    kind: "HorizontalPodAutoscaler"
+    metadata:
+      name: "convert-app-hpa"
+      namespace: "default"
+      labels:
+        app: "convert-app"
+    spec:
+      scaleTargetRef:
+        kind: "Deployment"
+        name: "convert-app"
+        apiVersion: "apps/v1"
+      minReplicas: 1
+      maxReplicas: 5
+      metrics:
+      - type: "Resource"
+        resource:
+          name: "cpu"
+          targetAverageUtilization: 80
