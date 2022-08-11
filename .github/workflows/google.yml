@@ -1,27 +1,17 @@
-# This workflow uses actions that are not certified by GitHub.
-# São fornecidas por terceiros e regidas por
-# termos de serviço, política de privacidade e suporte separados
-# documentação.
-
-# GitHub recommends pinning actions to a commit SHA.
-# To get a newer version, you will need to update the SHA.
-# You can also reference a tag or branch, but the action may change without warning.
-
 name: Build and Deploy to GKE
-
+#gatilho para disparar o actions sempre que houver atualização no branch main
 on:
   push:
     branches:
       - main
-
+#variáveis utlizados 
 env:
-  PROJECT_ID: ${{ secrets.GKE_PROJECT }}
-  GKE_CLUSTER: vivid-nomad-358913-gke    # Add your cluster name here.
-  GKE_ZONE: us-central1   # Add your cluster zone here.
-  DEPLOYMENT_NAME: convert-app # Add your deployment name here.
-  IMAGE: convert
-  TAG: 1.2
-
+  PROJECT_ID: ${{ secrets.GKE_PROJECT }} #ID do projeto no GCP
+  GKE_CLUSTER: vivid-nomad-358913-gke    # Nome do cluster GKE.
+  GKE_ZONE: us-central1   # Zona do cluster GKE.
+  DEPLOYMENT_NAME: convert-app # nome da aplicação.
+  IMAGE: convert #nome da imagem
+  
 jobs:
   setup-build-publish-deploy:
     name: Setup, Build, Publish, and Deploy
@@ -38,12 +28,11 @@ jobs:
         service_account_key: ${{ secrets.GKE_SA_KEY }}
         project_id: ${{ secrets.GKE_PROJECT }}
 
-    # Configure Docker to use the gcloud command-line tool as a credential
-    # helper for authentication
+    # Configure Docker no gcloud
     - run: |-
         gcloud --quiet auth configure-docker
 
-    # Get the GKE credentials so we can deploy to the cluster
+    # Crednciais do GCP
     - uses: google-github-actions/get-gke-credentials@fb08709ba27618c31c09e014e1d8364b02e5042e
       with:
         cluster_name: ${{ env.GKE_CLUSTER }}
@@ -63,9 +52,8 @@ jobs:
     - name: Publish
       run: |-
         docker push "gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_RUN_ID"
+    #aplicação da versão da imagem utlizando o ID do Github actions 
     - name: Replace tokens
-      # You may pin to the exact commit or the version.
-      # uses: cschleiden/replace-tokens@4f7e3d67f3ff2317ae650842145cdbaefba65189
       uses: cschleiden/replace-tokens@v1.1
       with:
         files: '["**/deployment.yaml"]'
