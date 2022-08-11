@@ -6,11 +6,11 @@
 ### Para essa aplicação foi escolhida o cluster GKE autopilot para termos uma infraestrutura escalável e um conteiner registry para armazenar as imagens geradas
 
 ### Arquivos
--Versions.tf : Contem os providers e versões utlizados 
--Terraform.tfvars: contem os valores utilizados na variaveis
--variables.tf: variáveis utlizadas
--Vpc.tf : criação da rede
--Gke: criação do cluster tipo autopilot com os rótulos solicitados
+    -Versions.tf : Contem os providers e versões utlizados 
+    -Terraform.tfvars: contem os valores utilizados na variaveis
+    -variables.tf: variáveis utlizadas
+    -Vpc.tf : criação da rede
+    -Gke: criação do cluster tipo autopilot com os rótulos solicitados
 
 #### execução
     -Conectar o terminal ao GCP
@@ -25,10 +25,10 @@
 ## Criação dos arquivos yaml para craição da aplicação escálável no cluster de kubernetes
 ### Arquivos
 
--deployment.yaml: definição do workload convert-app rodando na porta 8080 e com recurso de 250m de cpu
--service.yaml: definicção do load balance para expor a aplicação na porta 80
--hpa.yma: definição do HorizontalPodAutoscaler com no mínimo 1 replica e máximo de 5 replicas com limite de 80% do cpu definido
--kustomization.yaml: Utlizados o kustomization para declarar os objetos da aplicação no kubernetes
+    -deployment.yaml: definição do workload convert-app rodando na porta 8080 e com recurso de 250m de cpu
+    -service.yaml: definicção do load balance para expor a aplicação na porta 80
+    -hpa.yma: definição do HorizontalPodAutoscaler com no mínimo 1 replica e máximo de 5 replicas com limite de 80% do cpu definido
+    -kustomization.yaml: Utlizados o kustomization para declarar os objetos da aplicação no kubernetes
 
 
 
