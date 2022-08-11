@@ -37,7 +37,7 @@
 ## para a esteira de CI/CD foi utilizado o Github actions
 
 ### arquivos
-gooogle.yaml: contem todos os passos para a conexão com o GCP, geração do conteiner , publicação no registry, deplou no GKE
+[gooogle.yaml](ttps://github.com/hirata11/convert/blob/main/.github/workflows/google.yml) contem todos os passos para a conexão com o GCP, geração do conteiner , publicação no registry, deplou no GKE
 
 URL da aplicação rodando no GKE
 
