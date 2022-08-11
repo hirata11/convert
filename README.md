@@ -39,6 +39,16 @@ kustomization.yaml: Utlizados o kustomization para declarar os objetos da aplica
 ###arquivos
 gooogle.yaml: contem todos os passos para a conexão com o GCP, geração do conteiner , publicação no registry, deplou no GKE
 
+URL da aplicação rodando no GKE
+
+http://34.71.178.164/
+
+
+Se necessário dou acesso a conta do GCP para a realziação do teste
+
+Fernando Hirata
+hirata11@hotmail.com
+11993628722
 
 
 
