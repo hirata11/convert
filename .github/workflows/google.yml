@@ -69,7 +69,7 @@ jobs:
       with:
         files: '["**/deployment.yaml"]'
       env:
-        tag: $Env:GITHUB_RUN_ID 
+        tag: ${{ env.GITHUB_RUN_ID }}
 
     # Set up kustomize
     - name: Set up Kustomize
