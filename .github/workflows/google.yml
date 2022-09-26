@@ -28,6 +28,14 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
+    - name: SonarQube Quality Gate Check
+      # You may pin to the exact commit or the version.
+      # uses: SonarSource/sonarqube-quality-gate-action@15767f0e4eb489cfdd989dc717fa78c038d0de8a
+      uses: SonarSource/sonarqube-quality-gate-action@v1.0.0
+      with:
+        # Location of the scanner metadata report file
+        scanMetadataReportFile: .scannerwork/report-task.txt
+
     # Setup gcloud CLI
     - uses: google-github-actions/setup-gcloud@94337306dda8180d967a56932ceb4ddcf01edae7
       with:
