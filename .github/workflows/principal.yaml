@@ -33,7 +33,9 @@ jobs:
       - name: templateBuiid  
         uses: ./template/build
         with:
-          DEPLOYMENT_NAME:  ${{ env.DEPLOYMENT_NAME }}
+          REGISTRY_LOGIN_SERVER:  ${{ secrets.REGISTRY_LOGIN_SERVER }}
+          REGISTRY_USERNAME: ${{ sectrets.REGISTRY_USERNAME }}
+          REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
           IMAGE: ${{ env.IMAGE }}
           ACR: ${{ env.ACR }}
           Env: $development
