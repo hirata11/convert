@@ -6,6 +6,13 @@ on:
       - development
       - "release-**"
       - azure
+      
+env:
+  PROJECT_ID: ${{ secrets.GKE_PROJECT }} #ID do projeto no GCP
+  GKE_CLUSTER: vivid-nomad-358913-gke    # Nome do cluster GKE.
+  GKE_ZONE: us-central1   # Zona do cluster GKE.
+  DEPLOYMENT_NAME: convert-app # nome da aplicação.
+  IMAGE: convert #nome da imagem
 
 jobs:
   build:
@@ -50,14 +57,14 @@ jobs:
       - name: Build
         run: |-
           docker build \
-            --tag "gcr.io/$PROJECT_ID/$IMAGE:${{ steps.date.outputs.date }}-$GITHUB_RUN_ID" \
+            --tag "${{ secrets.REGISTRY_LOGIN_SERVER }}/$IMAGE:${{ steps.date.outputs.date }}-$GITHUB_RUN_ID" \
             --build-arg GITHUB_SHA="$GITHUB_SHA" \
             --build-arg GITHUB_REF="$GITHUB_REF" \
 
       # Push the Docker image to Google Container Registry
       - name: Publish
         run: |-
-          docker push "gcr.io/$PROJECT_ID/$IMAGE:${{ steps.date.outputs.date }}-$GITHUB_RUN_ID"
+          docker push "${{ secrets.REGISTRY_LOGIN_SERVER }}/$IMAGE:${{ steps.date.outputs.date }}-$GITHUB_RUN_ID"
 
           
           
