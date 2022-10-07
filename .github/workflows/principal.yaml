@@ -5,7 +5,7 @@ on:
     branches:
       - development
       - "release-**"
-      - azure
+      - azure01
 
 env:
   PROJECT_ID: ${{ secrets.GKE_PROJECT }} #ID do projeto no GCP
@@ -16,7 +16,7 @@ env:
   ACR: ${{ secrets.REGISTRY_LOGIN_SERVER }}
 
 jobs:
-  build:
+  buildTemplate:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout private tools
@@ -25,7 +25,7 @@ jobs:
           repository: hirata11/devops-template
           token: ${{ secrets.PAT }} # `GH_PAT` is a secret that contains your PAT
           path: template
-       - name: ls
-         run: ls -lRa
-          
+      - name: ls
+        run: ls -lRa
+
       
