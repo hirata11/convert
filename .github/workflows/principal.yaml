@@ -60,7 +60,7 @@ jobs:
           
   deploy-prd:
     runs-on: ubuntu-latest
-    needs: buildTemplate
+    needs: deploy-dev
     environment: production
     steps:
       - name: Checkout private tools
