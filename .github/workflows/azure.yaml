@@ -13,6 +13,7 @@ env:
   GKE_ZONE: us-central1   # Zona do cluster GKE.
   DEPLOYMENT_NAME: convert-app # nome da aplicação.
   IMAGE: convert #nome da imagem
+  ACR: ${{ secrets.REGISTRY_LOGIN_SERVER }}
 
 jobs:
   build:
@@ -52,14 +53,14 @@ jobs:
       - name: Build
         run: |-
           docker build \
-            --tag "${{ secrets.REGISTRY_LOGIN_SERVER }}/$IMAGE:${{ steps.date.outputs.date }}" \
+            --tag "$ACR/$IMAGE:${{ steps.date.outputs.date }}" \
             --build-arg GITHUB_SHA="$GITHUB_SHA" \
             --build-arg GITHUB_REF="$GITHUB_REF" \
 
       # Push the Docker image to Google Container Registry
       - name: Publish
         run: |-
-          docker push "${{ secrets.REGISTRY_LOGIN_SERVER }}/$IMAGE:${{ steps.date.outputs.date }}"
+          docker push "$ACR/$IMAGE:${{ steps.date.outputs.date }}"
 
           
           
