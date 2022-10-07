@@ -38,6 +38,7 @@ jobs:
           IMAGE: ${{ env.IMAGE }}
           ACR: ${{ env.ACR }}
           Env: $development
+          tag: $GITHUB_RUN_NUMBER
           
   deploy-dev:
     runs-on: ubuntu-latest
