@@ -57,3 +57,22 @@ jobs:
           AZURE_CREDENTIALS:  ${{ secrets.AZURE_CREDENTIALS }}
           IMAGE: ${{ env.IMAGE }}
           ACR: ${{ env.ACR }}
+          
+  deploy-prd:
+    runs-on: ubuntu-latest
+    needs: buildTemplate
+    environment: production
+    steps:
+      - name: Checkout private tools
+        uses: actions/checkout@v3
+        with:
+          repository: hirata11/devops-template
+          token: ${{ secrets.PAT }} # `GH_PAT` is a secret that contains your PAT
+          path: template
+
+      - name: templateDeploy  
+        uses: ./template/deploy
+        with:
+          AZURE_CREDENTIALS:  ${{ secrets.AZURE_CREDENTIALS }}
+          IMAGE: ${{ env.IMAGE }}
+          ACR: ${{ env.ACR }}
