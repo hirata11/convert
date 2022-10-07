@@ -27,8 +27,6 @@ jobs:
           repository: hirata11/devops-template
           token: ${{ secrets.PAT }} # `GH_PAT` is a secret that contains your PAT
           path: template
-      - name: ls
-        run: ls -lRa
         
       - name: templateBuiid  
         uses: ./template/build
