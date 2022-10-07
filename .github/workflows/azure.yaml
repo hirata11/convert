@@ -16,7 +16,7 @@ env:
   ACR: ${{ secrets.REGISTRY_LOGIN_SERVER }}
 
 jobs:
-  build:
+  build-docker:
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout GitHub Action"
@@ -53,10 +53,11 @@ jobs:
       - name: Build
         run: |-
           docker build \
-            --tag "$ACR/$IMAGE:$GITHUB_RUN_ID$GITHUB_RUN_ID" \
+            --tag "$ACR/$IMAGE:${{ steps.date.outputs.date }}-$GITHUB_RUN_ID" \
             --build-arg GITHUB_SHA="$GITHUB_SHA" \
             --build-arg GITHUB_REF="$GITHUB_REF" \
-
+            
+            
       # Push the Docker image to Google Container Registry
       - name: Publish
         run: |-
@@ -66,7 +67,7 @@ jobs:
           
   Deploy:
     runs-on: ubuntu-latest
-    needs: build    
+    needs: build-docker    
     environment: development
     steps:
     
@@ -79,6 +80,6 @@ jobs:
         uses: Azure/webapps-deploy@v2
         with:
           # Name of the Azure Web App
-          app-name: api-4cast-faas
-          images: ${{ secrets.REGISTRY_LOGIN_SERVER }}/api-4hub-faas:${{ steps.date.outputs.date }}
+          app-name: $DEPLOYMENT_NAME
+          images: "$ACR/$IMAGE:${{ steps.date.outputs.date }}-$GITHUB_RUN_ID" 
           
