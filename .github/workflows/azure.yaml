@@ -85,5 +85,5 @@ jobs:
         with:
           # Name of the Azure Web App
           app-name: convert-app
-          images: "$ACR/$IMAGE:${{ steps.date.outputs.date }}-$GITHUB_RUN_ID" 
+          images: "${{ env.ACR }}/${{ env.IMAGE }}:${{ steps.date.outputs.date }}-${{ env.GITHUB_RUN_ID }}" 
           
