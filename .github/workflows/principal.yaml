@@ -19,6 +19,8 @@ jobs:
   buildTemplate:
     runs-on: ubuntu-latest
     steps:
+      - name: "Checkout GitHub Action"
+        uses: actions/checkout@v2
       - name: Checkout private tools
         uses: actions/checkout@v3
         with:
@@ -27,5 +29,14 @@ jobs:
           path: template
       - name: ls
         run: ls -lRa
+        
+      - name: templateBuiid  
+        uses: template/build.yaml@master
+        with:
+          DEPLOYMENT_NAME:  ${{ env.DEPLOYMENT_NAME }}
+          IMAGE: ${{ env.IMAGE }}
+          ACR: ${{ env.ACR }}
+          Env: $development
+        
 
       
