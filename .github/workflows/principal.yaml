@@ -31,7 +31,7 @@ jobs:
         run: ls -lRa
         
       - name: templateBuiid  
-        uses: ./template/build.yaml@master
+        uses: ./template/build.yaml
         with:
           DEPLOYMENT_NAME:  ${{ env.DEPLOYMENT_NAME }}
           IMAGE: ${{ env.IMAGE }}
