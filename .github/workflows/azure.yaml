@@ -7,19 +7,26 @@ on:
       - "release-**"
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout GitHub Action"
         uses: actions/checkout@v2
-        
+
+      - name: "Login to ACR"
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-       - name: SonarQube Quality Gate Check
+      - name: SonarQube Quality Gate Check
         # You may pin to the exact commit or the version.
         # uses: SonarSource/sonarqube-quality-gate-action@15767f0e4eb489cfdd989dc717fa78c038d0de8a
         uses: SonarSource/sonarqube-quality-gate-action@v1.0.0
@@ -29,34 +36,28 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-        - name: "Login to ACR"
-          uses: azure/docker-login@v1
-          with:
-            login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
-            username: ${{ secrets.REGISTRY_USERNAME }}
-            password: ${{ secrets.REGISTRY_PASSWORD }}
+        
+      - name: Logando no Azure para Deployment
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-        - name: Logando no Azure para Deployment
-          uses: azure/login@v1
-          with:
-            creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
 
-        - name: Get current date
-          id: date
-          run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+      - name: Build
+        run: |-
+          docker build \
+            --tag "gcr.io/$PROJECT_ID/$IMAGE:${{ steps.date.outputs.date }}-$GITHUB_RUN_ID" \
+            --build-arg GITHUB_SHA="$GITHUB_SHA" \
+            --build-arg GITHUB_REF="$GITHUB_REF" \
 
-        - name: Build
-          run: |-
-            docker build \
-              --tag "gcr.io/$PROJECT_ID/$IMAGE:${{ steps.date.outputs.date }}-$GITHUB_RUN_ID" \
-              --build-arg GITHUB_SHA="$GITHUB_SHA" \
-              --build-arg GITHUB_REF="$GITHUB_REF" \
+      # Push the Docker image to Google Container Registry
+      - name: Publish
+        run: |-
+          docker push "gcr.io/$PROJECT_ID/$IMAGE:${{ steps.date.outputs.date }}-$GITHUB_RUN_ID"
 
-        # Push the Docker image to Google Container Registry
-        - name: Publish
-          run: |-
-            docker push "gcr.io/$PROJECT_ID/$IMAGE:${{ steps.date.outputs.date }}-$GITHUB_RUN_ID"
-          
           
           
   Deploy:
