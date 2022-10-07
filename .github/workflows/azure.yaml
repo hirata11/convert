@@ -80,6 +80,6 @@ jobs:
         uses: Azure/webapps-deploy@v2
         with:
           # Name of the Azure Web App
-          app-name: $DEPLOYMENT_NAME
+          app-name: convert-app
           images: "$ACR/$IMAGE:${{ steps.date.outputs.date }}-$GITHUB_RUN_ID" 
           
