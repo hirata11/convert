@@ -1,0 +1,31 @@
+name: CI/CD
+
+on:
+  push:
+    branches:
+      - development
+      - "release-**"
+      - azure
+
+env:
+  PROJECT_ID: ${{ secrets.GKE_PROJECT }} #ID do projeto no GCP
+  GKE_CLUSTER: vivid-nomad-358913-gke    # Nome do cluster GKE.
+  GKE_ZONE: us-central1   # Zona do cluster GKE.
+  DEPLOYMENT_NAME: convert-app # nome da aplicação.
+  IMAGE: convert #nome da imagem
+  ACR: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout private tools
+        uses: actions/checkout@v3
+        with:
+          repository: hirata11/devops-template
+          token: ${{ secrets.PAT }} # `GH_PAT` is a secret that contains your PAT
+          path: template
+       - name: ls
+         run: ls -lRa
+          
+      
