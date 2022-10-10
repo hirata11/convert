@@ -1,4 +1,4 @@
-name: CI/CD
+name: BranchAzure
 
 on:
   push:
