@@ -1,8 +1,21 @@
 name: CI/CD
 
 on: 
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'
+        required: true
+        default: 'warning'
+        type: choice
+        options:
+        - info
+        - warning
+        - debug
   release:
     types: [published, deleted]
+    
+
 
 env:
   DEPLOYMENT_NAME: convert-app # nome da aplicação.
