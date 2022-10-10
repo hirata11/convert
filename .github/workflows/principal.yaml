@@ -39,7 +39,7 @@ jobs:
           REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
           IMAGE: ${{ env.IMAGE }}
           ACR: ${{ env.ACR }}
-          tag: ${{ env.GITHUB_RUN_NUMBER }}
+          tag: $GITHUB_RUN_NUMBER
           
   deploy-dev:
     runs-on: ubuntu-latest
@@ -59,7 +59,7 @@ jobs:
           AZURE_CREDENTIALS:  ${{ secrets.AZURE_CREDENTIALS }}
           IMAGE: ${{ env.IMAGE }}
           ACR: ${{ env.ACR }}
-          TAG: ${{ env.GITHUB_RUN_NUMBER }}
+          TAG: $GITHUB_RUN_NUMBER
           
   deploy-prd:
     runs-on: ubuntu-latest
@@ -79,4 +79,4 @@ jobs:
           AZURE_CREDENTIALS:  ${{ secrets.AZURE_CREDENTIALS }}
           IMAGE: ${{ env.IMAGE }}
           ACR: ${{ env.ACR }}
-          TAG: ${{ env.GITHUB_RUN_NUMBER }}
+          TAG: $GITHUB_RUN_NUMBER
