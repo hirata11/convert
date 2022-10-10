@@ -1,16 +1,10 @@
 name: CI/CD
 
-on:
-  push:
-    branches:
-      - development
-      - "release-**"
-      - azure01
+on: 
+  release:
+    types: [published, deleted]
 
 env:
-  PROJECT_ID: ${{ secrets.GKE_PROJECT }} #ID do projeto no GCP
-  GKE_CLUSTER: vivid-nomad-358913-gke    # Nome do cluster GKE.
-  GKE_ZONE: us-central1   # Zona do cluster GKE.
   DEPLOYMENT_NAME: convert-app # nome da aplicação.
   IMAGE: convert #nome da imagem
   ACR: ${{ secrets.REGISTRY_LOGIN_SERVER }}
@@ -19,9 +13,17 @@ jobs:
 
   buildTemplate:
     runs-on: ubuntu-latest
-    steps:
+    steps:    
+      - id: latest
+        uses: thebritican/fetch-latest-release@v1.0.3
+        with:
+          github_token: ${{ secrets.PAT }}
+  
       - name: "Checkout GitHub Action"
         uses: actions/checkout@v2
+        with:
+          ref: ${{ steps.latest.outputs.tag_name }}
+          
       - name: Checkout private tools
         uses: actions/checkout@v3
         with:
