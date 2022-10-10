@@ -18,6 +18,8 @@ jobs:
         uses: thebritican/fetch-latest-release@v1.0.3
         with:
           github_token: ${{ secrets.PAT }}
+          
+      - run: echo ${{ steps.latest.outputs.tag_name }}
   
       - name: "Checkout GitHub Action"
         uses: actions/checkout@v2
