@@ -1,8 +1,5 @@
 name: CI/CD
 
-on: 
-  release:
-    types: [published, deleted]
 
 env:
   DEPLOYMENT_NAME: convert-app # nome da aplicação.
