@@ -1,8 +1,9 @@
 name: CI/CD
 
-on: 
-  release:
-    types: [published, deleted]
+on:
+  push:
+    branches:
+      - master
 
 env:
   DEPLOYMENT_NAME: convert-app # nome da aplicação.
