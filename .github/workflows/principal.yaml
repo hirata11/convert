@@ -141,7 +141,17 @@ jobs:
           uses: thebritican/fetch-latest-release@v1.0.3
           with:
             github_token: ${{ secrets.PAT }}
-        - run: 'curl -v -H "Authorization: Bearer ${{ secrets.PAT }}" --request DELETE "https://api.github.com/repos/user/repo/releases/${{ steps.latestdel.outputs.tag_name }}"'
+        - name: getreleaseid  
+          run: |
+            release=$(curl \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer ${{ secrets.PAT }}" \
+              https://api.github.com/repos/hirata11/convert/releases/tags/${{ steps.latestdel.outputs.tag_name }} | jq '.id')
+            curl \
+              -X DELETE \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer ${{ secrets.PAT }}" \
+              https://api.github.com/repos/hirata11/convert/releases/$release   
         - id: latest
           uses: thebritican/fetch-latest-release@v1.0.3
           with:
