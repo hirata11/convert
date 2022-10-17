@@ -36,7 +36,7 @@ jobs:
           github_token: ${{ secrets.PAT }}
           
       - run: echo ${{ steps.latest.outputs.tag_name }}
-  
+    
       - name: "Checkout GitHub Action"
         uses: actions/checkout@v2
         with:
@@ -57,13 +57,17 @@ jobs:
           REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
           IMAGE: ${{ env.IMAGE }}
           ACR: ${{ env.ACR }}
-          tag: $GITHUB_RUN_NUMBER
+          tag: ${{ steps.latest.outputs.tag_name }}
           
   deploy-dev:
     runs-on: ubuntu-latest
     needs: buildTemplate
     environment: development
     steps:
+      - id: latest
+        uses: thebritican/fetch-latest-release@v1.0.3
+        with:
+          github_token: ${{ secrets.PAT }}
       - name: Checkout private tools
         uses: actions/checkout@v3
         with:
@@ -77,7 +81,7 @@ jobs:
           AZURE_CREDENTIALS:  ${{ secrets.AZURE_CREDENTIALS }}
           IMAGE: ${{ env.IMAGE }}
           ACR: ${{ env.ACR }}
-          TAG: $GITHUB_RUN_NUMBER
+          TAG: ${{ steps.latest.outputs.tag_name }}
           
   deploy-hml:
     runs-on: ubuntu-latest
@@ -97,7 +101,7 @@ jobs:
           AZURE_CREDENTIALS:  ${{ secrets.AZURE_CREDENTIALS }}
           IMAGE: ${{ env.IMAGE }}
           ACR: ${{ env.ACR }}
-          TAG: $GITHUB_RUN_NUMBER
+          TAG: ${{ steps.latest.outputs.tag_name }}
           
   deploy-prd:
       runs-on: ubuntu-latest
@@ -117,4 +121,35 @@ jobs:
             AZURE_CREDENTIALS:  ${{ secrets.AZURE_CREDENTIALS }}
             IMAGE: ${{ env.IMAGE }}
             ACR: ${{ env.ACR }}
-            TAG: $GITHUB_RUN_NUMBER
+            TAG: ${{ steps.latest.outputs.tag_name }}
+    
+  rollbackprd:
+      runs-on: ubuntu-latest
+      needs: deploy-prd
+      environment: production
+      steps:
+        
+        - id: latestdel
+          uses: thebritican/fetch-latest-release@v1.0.3
+          with:
+            github_token: ${{ secrets.PAT }}
+        - run: 'curl -v -H "Authorization: Bearer ${{ secrets.PAT }}" --request DELETE "https://api.github.com/repos/user/repo/releases/${{ steps.latestdel.outputs.tag_name }}"'
+        - id: latest
+          uses: thebritican/fetch-latest-release@v1.0.3
+          with:
+            github_token: ${{ secrets.PAT }}        
+        - name: Checkout private tools
+          uses: actions/checkout@v3
+          with:
+            repository: hirata11/devops-template
+            token: ${{ secrets.PAT }} # `GH_PAT` is a secret that contains your PAT
+            path: template
+
+        - name: templateDeploy  
+          uses: ./template/deploy
+          with:
+            AZURE_CREDENTIALS:  ${{ secrets.AZURE_CREDENTIALS }}
+            IMAGE: ${{ env.IMAGE }}
+            ACR: ${{ env.ACR }}
+            TAG: ${{ steps.latest.outputs.tag_name }}
+  
