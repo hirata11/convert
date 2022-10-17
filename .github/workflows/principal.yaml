@@ -13,7 +13,7 @@ on:
         - warning
         - debug
   release:
-    types: [published, deleted]
+    types: published
   repository_dispatch:
     # this is the event_type passed in from the webhook, needs to match exactly what was defined in the webhook custom data payload
     types: [ "event-triggered-by-jira" ]
