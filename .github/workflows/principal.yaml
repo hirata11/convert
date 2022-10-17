@@ -88,6 +88,10 @@ jobs:
     needs: deploy-dev
     environment: staging
     steps:
+      - id: latest
+        uses: thebritican/fetch-latest-release@v1.0.3
+        with:
+          github_token: ${{ secrets.PAT }}
       - name: Checkout private tools
         uses: actions/checkout@v3
         with:
@@ -108,6 +112,10 @@ jobs:
       needs: deploy-hml
       environment: production
       steps:
+        - id: latest
+          uses: thebritican/fetch-latest-release@v1.0.3
+          with:
+            github_token: ${{ secrets.PAT }}
         - name: Checkout private tools
           uses: actions/checkout@v3
           with:
