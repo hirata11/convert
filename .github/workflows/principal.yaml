@@ -187,7 +187,7 @@ jobs:
       needs: deploy-prd
       environment: production
       steps:
-        - id: latestdel
+        - id: latest
           uses: thebritican/fetch-latest-release@v2.0.0
           with:
             github_token: ${{ secrets.PAT }}
