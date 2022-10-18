@@ -161,8 +161,7 @@ jobs:
         - id: latestdel
           uses: thebritican/fetch-latest-release@v2.0.0
           with:
-            github_token: ${{ secrets.PAT }}
-            
+            github_token: ${{ secrets.PAT }}            
         - name: getreleaseid  
           run: |
             release=$(curl \
@@ -174,13 +173,13 @@ jobs:
               -H "Accept: application/vnd.github+json" \
               -H "Authorization: Bearer ${{ secrets.PAT }}" \
               https://api.github.com/repos/hirata11/convert/releases/$release
-        - run: curl -sL https://api.github.com/repos/hirata11/convert/releases/latest | jq -r ".tag_name"
+        - run: |
+            sleep 1m
+            curl -sL https://api.github.com/repos/hirata11/convert/releases/latest | jq -r ".tag_name"
         - name: get lastest release
           id: lastestRelease
           run: echo "::set-output name=releasename::$(curl -sL https://api.github.com/repos/hirata11/convert/releases/latest | jq -r ".tag_name")"
-
         - run: echo ${{ steps.lastestRelease.outputs.releasename }}
-
         - name: Checkout private tools
           uses: actions/checkout@v3
           with:
