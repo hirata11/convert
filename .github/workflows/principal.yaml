@@ -138,7 +138,7 @@ jobs:
       steps:
         - run: sudo apt-get install -y jq
         - id: latestdel
-          uses: thebritican/fetch-latest-release@v1.0.3
+          uses: thebritican/fetch-latest-release@v2.0.0
           with:
             github_token: ${{ secrets.PAT }}
         - name: getreleaseid  
@@ -153,7 +153,7 @@ jobs:
               -H "Authorization: Bearer ${{ secrets.PAT }}" \
               https://api.github.com/repos/hirata11/convert/releases/$release   
         - id: latest
-          uses: thebritican/fetch-latest-release@v1.0.3
+          uses: thebritican/fetch-latest-release@v2.0.0
           with:
             github_token: ${{ secrets.PAT }}        
         - name: Checkout private tools
