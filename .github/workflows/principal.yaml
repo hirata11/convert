@@ -152,7 +152,7 @@ jobs:
             ACR: ${{ env.ACR }}
             TAG: ${{ steps.latest.outputs.tag_name }}
     
- rollbackprd:
+  rollbackprd:
       runs-on: ubuntu-latest
       needs: deploy-prd
       environment: rollback
