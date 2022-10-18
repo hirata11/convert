@@ -68,7 +68,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           source-branch: release
           target-branch: 'release-${{ steps.latest.outputs.tag_name }}'
-          commit-message: "merge dev to release-${{ steps.latest.outputs.tag_name }}
+          commit-message: "merge dev to release-${{ steps.latest.outputs.tag_name }}"
 
       - name: templateBuiid  
         uses: ./template/build
@@ -152,7 +152,7 @@ jobs:
             ACR: ${{ env.ACR }}
             TAG: ${{ steps.latest.outputs.tag_name }}
     
-  rollbackprd:
+ rollbackprd:
       runs-on: ubuntu-latest
       needs: deploy-prd
       environment: rollback
@@ -201,7 +201,7 @@ jobs:
       needs: deploy-prd
       environment: production
       steps:
-        - id: latest
+        - id: latestdel
           uses: thebritican/fetch-latest-release@v2.0.0
           with:
             github_token: ${{ secrets.PAT }}
