@@ -31,7 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:    
       - id: latest
-        uses: thebritican/fetch-latest-release@v1.0.3
+        uses: thebritican/fetch-latest-release@v2.0.0
         with:
           github_token: ${{ secrets.PAT }}
           
@@ -65,7 +65,7 @@ jobs:
     environment: development
     steps:
       - id: latest
-        uses: thebritican/fetch-latest-release@v1.0.3
+        uses: thebritican/fetch-latest-release@vv2.0.0
         with:
           github_token: ${{ secrets.PAT }}
       - name: Checkout private tools
@@ -89,7 +89,7 @@ jobs:
     environment: staging
     steps:
       - id: latest
-        uses: thebritican/fetch-latest-release@v1.0.3
+        uses: thebritican/fetch-latest-release@v2.0.0
         with:
           github_token: ${{ secrets.PAT }}
       - name: Checkout private tools
@@ -113,7 +113,7 @@ jobs:
       environment: production
       steps:
         - id: latest
-          uses: thebritican/fetch-latest-release@v1.0.3
+          uses: thebritican/fetch-latest-release@v2.0.0
           with:
             github_token: ${{ secrets.PAT }}
         - name: Checkout private tools
