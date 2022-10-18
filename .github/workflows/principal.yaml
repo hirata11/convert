@@ -153,14 +153,13 @@ jobs:
               -H "Accept: application/vnd.github+json" \
               -H "Authorization: Bearer ${{ secrets.PAT }}" \
               https://api.github.com/repos/hirata11/convert/releases/$release
-
+        -run: curl -sL https://api.github.com/repos/hirata11/convert/releases/latest | jq -r ".tag_name"
         - name: get lastest release
           id: lastestRelease
-          run: |
-            echo "::set-output name=tag_name::$(curl -sL https://api.github.com/repos/hirata11/convert/releases/latest | jq -r ".tag_name")"
+          run: echo "::set-output name=releasename::$(curl -sL https://api.github.com/repos/hirata11/convert/releases/latest | jq -r ".tag_name")"
 
-        - run: echo ${{ steps.lastestRelease.outputs.tag_name }}
-             
+        - run: echo ${{ steps.lastestRelease.outputs.releasename }}
+
         - name: Checkout private tools
           uses: actions/checkout@v3
           with:
@@ -174,5 +173,5 @@ jobs:
             AZURE_CREDENTIALS:  ${{ secrets.AZURE_CREDENTIALS }}
             IMAGE: ${{ env.IMAGE }}
             ACR: ${{ env.ACR }}
-            TAG: ${{ steps.lastestRelease.outputs.tag_name }}   
+            TAG: ${{ steps.lastestRelease.outputs.releasename }}   
   
