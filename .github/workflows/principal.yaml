@@ -51,7 +51,7 @@ jobs:
 
       - name: checkbranch
         id: check 
-        run: echo "::set-output name=branchexist::$(git ls-remote --heads origin 'release-${{ steps.latest.outputs.tag_name }}'
+        run: echo "::set-output name=branchexist::$(git ls-remote --heads origin 'release-${{ steps.latest.outputs.tag_name }}')"
 
       - name: Create Branch
         if: ${{ steps.check.outputs.branchexist }} == ""
