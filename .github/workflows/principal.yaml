@@ -136,7 +136,7 @@ jobs:
       needs: deploy-prd
       environment: production
       steps:
-        - run: apt-get install -y jq
+        - run: sudo apt-get install -y jq
         - id: latestdel
           uses: thebritican/fetch-latest-release@v1.0.3
           with:
