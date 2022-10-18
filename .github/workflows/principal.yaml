@@ -141,6 +141,7 @@ jobs:
           uses: thebritican/fetch-latest-release@v2.0.0
           with:
             github_token: ${{ secrets.PAT }}
+            
         - name: getreleaseid  
           run: |
             release=$(curl \
@@ -151,10 +152,12 @@ jobs:
               -X DELETE \
               -H "Accept: application/vnd.github+json" \
               -H "Authorization: Bearer ${{ secrets.PAT }}" \
-              https://api.github.com/repos/hirata11/convert/releases/$release   
-        - name: action-latest-release-version
-          id: latest
-          uses: reloc8/action-latest-release-version@1.0.0      
+              https://api.github.com/repos/hirata11/convert/releases/$release
+        - name: lastestRelease
+          run: |
+            release=$(curl -sL https://api.github.com/repos/hirata11/convert/releases/latest | jq -r ".tag_name")
+            echo "::set-output name=tag_name::$release"
+        - run: echo ${{ steps.latestRelease.outputs.tag_name }}     
         - name: Checkout private tools
           uses: actions/checkout@v3
           with:
