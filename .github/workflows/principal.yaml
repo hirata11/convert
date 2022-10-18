@@ -153,10 +153,14 @@ jobs:
               -H "Accept: application/vnd.github+json" \
               -H "Authorization: Bearer ${{ secrets.PAT }}" \
               https://api.github.com/repos/hirata11/convert/releases/$release
-        - name: lastestRelease
+
+        - name: get lastest release
+          id: lastestRelease
           run: |
             echo "::set-output name=tag_name::$(curl -sL https://api.github.com/repos/hirata11/convert/releases/latest | jq -r ".tag_name")"
-        - run: echo ${{ steps.lastestRelease.outputs.tag_name }}     
+
+        - run: echo ${{ steps.lastestRelease.outputs.tag_name }}
+             
         - name: Checkout private tools
           uses: actions/checkout@v3
           with:
