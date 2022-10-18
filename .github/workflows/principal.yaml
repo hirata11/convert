@@ -49,13 +49,27 @@ jobs:
           token: ${{ secrets.PAT }} # `GH_PAT` is a secret that contains your PAT
           path: template
 
+      - name: checkbranch
+        id: check 
+        run: echo "::set-output name=branchexist::$(git ls-remote --heads origin 'release-${{ steps.latest.outputs.tag_name }}'
+
       - name: Create Branch
+        if: ${{ steps.check.outputs.branchexist }} == ""
         uses: peterjgrainger/action-create-branch@v2.2.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           branch: 'release-${{ steps.latest.outputs.tag_name }}'
         
+      - name: Merge Branch
+        if: ${{ steps.check.outputs.branchexist }} != ""
+        uses: tukasz/direct-merge-action@master
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          source-branch: release
+          target-branch: 'release-${{ steps.latest.outputs.tag_name }}'
+          commit-message: "merge dev to release-${{ steps.latest.outputs.tag_name }}
+
       - name: templateBuiid  
         uses: ./template/build
         with:
