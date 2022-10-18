@@ -141,7 +141,7 @@ jobs:
   rollbackprd:
       runs-on: ubuntu-latest
       needs: deploy-prd
-      environment: production
+      environment: rollback
       steps:
         - run: sudo apt-get install -y jq
         - id: latestdel
