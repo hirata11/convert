@@ -120,13 +120,6 @@ jobs:
           uses: thebritican/fetch-latest-release@v2.0.0
           with:
             github_token: ${{ secrets.PAT }} 
-            
-        - name: templateRollback
-          uses: ./template/rollback
-          with:
-            token: ${{ secrets.PAT }} 
-            tag: ${{ steps.latestdel.outputs.tag_name }} 
-            app: ${{ env.IMAGE }}
 
         - name: getreleaseid  
           run: |
