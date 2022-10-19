@@ -120,15 +120,36 @@ jobs:
           uses: thebritican/fetch-latest-release@v2.0.0
           with:
             github_token: ${{ secrets.PAT }} 
+            
         - name: templateRollback
           uses: ./template/rollback
           with:
             token: ${{ secrets.PAT }} 
             tag: ${{ steps.latestdel.outputs.tag_name }} 
-            app: ${{ env.IMAGE }}        
+              app: ${{ env.IMAGE }}
+
+        - name: getreleaseid  
+          run: |
+            release=$(curl \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer $${{ inputs.token }}" \
+              https://api.github.com/repos/hirata11/${{ env.IMAGE }}/releases/tags/${{ steps.latestdel.outputs.tag_name }}  | jq '.id')
+            echo $release
+            curl \
+              -X DELETE \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer ${{ inputs.token }}" \
+              https://api.github.com/repos/hirata11/${{ env.IMAGE }}/releases/$release
+          shell: bash
+
+        - run: |
+            sleep 1m
+            curl -sL https://api.github.com/repos/hirata11/${{ env.IMAGE }}/releases/latest | jq -r ".tag_name"
+          shell: bash
+
         - name: get lastest release
           id: lastestRelease
-          run: echo "::set-output name=releasename::$(curl -sL https://api.github.com/repos/hirata11/${{ inputs.app }}/releases/latest | jq -r ".tag_name")"
+          run: echo "::set-output name=releasename::$(curl -sL https://api.github.com/repos/hirata11/${{ env.IMAGE }} /releases/latest | jq -r ".tag_name")"
         - name: templateDeploy  
           uses: ./template/deploy/api
           with:
