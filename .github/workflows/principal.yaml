@@ -142,7 +142,7 @@ jobs:
 
         - name: get lastest release
           id: lastestRelease
-          run: echo "::set-output name=releasename::$(curl -sL https://api.github.com/repos/hirata11/${{ env.IMAGE }} /releases/latest | jq -r ".tag_name")"
+          run: echo "::set-output name=releasename::$(curl -sL https://api.github.com/repos/hirata11/${{ env.IMAGE }}/releases/latest | jq -r ".tag_name")"
         - name: templateDeploy  
           uses: ./template/deploy/api
           with:
