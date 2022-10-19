@@ -1,85 +1,44 @@
 name: CI/CD
-
 on: 
   workflow_dispatch:
-    inputs:
-      logLevel:
-        description: 'Log level'
-        required: true
-        default: 'warning'
-        type: choice
-        options:
-        - info
-        - warning
-        - debug
   release:
     types: published
-  repository_dispatch:
-    # this is the event_type passed in from the webhook, needs to match exactly what was defined in the webhook custom data payload
-    types: [ "event-triggered-by-jira" ]
-    
-
-
 env:
   DEPLOYMENT_NAME: convert-app # nome da aplicação.
   IMAGE: convert #nome da imagem
   ACR: ${{ secrets.REGISTRY_LOGIN_SERVER }}
-
 jobs:
-
   buildTemplate:
     runs-on: ubuntu-latest
     steps:    
       - id: latest
         uses: thebritican/fetch-latest-release@v2.0.0
         with:
-          github_token: ${{ secrets.PAT }}
-          
-      - run: echo ${{ steps.latest.outputs.tag_name }}
-    
+          github_token: ${{ secrets.PAT }}    
       - name: "Checkout GitHub Action"
         uses: actions/checkout@v2
         with:
-          ref: ${{ steps.latest.outputs.tag_name }}
-          
+          ref: ${{ steps.latest.outputs.tag_name }}          
       - name: Checkout private tools
         uses: actions/checkout@v3
         with:
           repository: hirata11/devops-template
           token: ${{ secrets.PAT }} # `GH_PAT` is a secret that contains your PAT
           path: template
-
-      - name: checkbranch
-        id: check 
-        run: echo "::set-output name=branchexist::$(git ls-remote --heads origin 'release-${{ steps.latest.outputs.tag_name }}')"
-
-      - name: Create Branch
-        if: ${{ steps.check.outputs.branchexist }} == ""
-        uses: peterjgrainger/action-create-branch@v2.2.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          branch: 'release-${{ steps.latest.outputs.tag_name }}'
-        
-      - name: Merge Branch
-        if: ${{ steps.check.outputs.branchexist }} != ""
-        uses: tukasz/direct-merge-action@master
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          source-branch: release
-          target-branch: 'release-${{ steps.latest.outputs.tag_name }}'
-          commit-message: "merge dev to release-${{ steps.latest.outputs.tag_name }}"
-
       - name: templateBuiid  
-        uses: ./template/build
+        uses: ./template/build/branch
+        with:
+          tag: ${{ steps.latest.outputs.tag_name }}
+          token: ${{ secrets.PAT }}
+      - name: templateBuiid  
+        uses: ./template/build/api
         with:
           REGISTRY_LOGIN_SERVER:  ${{ secrets.REGISTRY_LOGIN_SERVER }}
           REGISTRY_USERNAME: ${{ secrets.REGISTRY_USERNAME }}
           REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
           IMAGE: ${{ env.IMAGE }}
           ACR: ${{ env.ACR }}
-          tag: ${{ steps.latest.outputs.tag_name }}
-          
+          tag: ${{ steps.latest.outputs.tag_name }}          
   deploy-dev:
     runs-on: ubuntu-latest
     needs: buildTemplate
@@ -95,15 +54,13 @@ jobs:
           repository: hirata11/devops-template
           token: ${{ secrets.PAT }} # `GH_PAT` is a secret that contains your PAT
           path: template
-
       - name: templateDeploy  
         uses: ./template/deploy
         with:
           AZURE_CREDENTIALS:  ${{ secrets.AZURE_CREDENTIALS }}
           IMAGE: ${{ env.IMAGE }}
           ACR: ${{ env.ACR }}
-          TAG: ${{ steps.latest.outputs.tag_name }}
-          
+          TAG: ${{ steps.latest.outputs.tag_name }}          
   deploy-hml:
     runs-on: ubuntu-latest
     needs: deploy-dev
@@ -119,15 +76,13 @@ jobs:
           repository: hirata11/devops-template
           token: ${{ secrets.PAT }} # `GH_PAT` is a secret that contains your PAT
           path: template
-
       - name: templateDeploy  
         uses: ./template/deploy
         with:
           AZURE_CREDENTIALS:  ${{ secrets.AZURE_CREDENTIALS }}
           IMAGE: ${{ env.IMAGE }}
           ACR: ${{ env.ACR }}
-          TAG: ${{ steps.latest.outputs.tag_name }}
-          
+          TAG: ${{ steps.latest.outputs.tag_name }}          
   deploy-prd:
       runs-on: ubuntu-latest
       needs: deploy-hml
@@ -143,58 +98,44 @@ jobs:
             repository: hirata11/devops-template
             token: ${{ secrets.PAT }} # `GH_PAT` is a secret that contains your PAT
             path: template
-
-        - name: templateDeploy  
+        - nameapp: templateDeploy  
           uses: ./template/deploy
           with:
             AZURE_CREDENTIALS:  ${{ secrets.AZURE_CREDENTIALS }}
             IMAGE: ${{ env.IMAGE }}
             ACR: ${{ env.ACR }}
-            TAG: ${{ steps.latest.outputs.tag_name }}
-    
+            TAG: ${{ steps.latest.outputs.tag_name }}    
   rollbackprd:
       runs-on: ubuntu-latest
       needs: deploy-prd
       environment: rollback
       steps:
-        - run: sudo apt-get install -y jq
-        - id: latestdel
-          uses: thebritican/fetch-latest-release@v2.0.0
-          with:
-            github_token: ${{ secrets.PAT }}            
-        - name: getreleaseid  
-          run: |
-            release=$(curl \
-              -H "Accept: application/vnd.github+json" \
-              -H "Authorization: Bearer ${{ secrets.PAT }}" \
-              https://api.github.com/repos/hirata11/convert/releases/tags/${{ steps.latestdel.outputs.tag_name }} | jq '.id')
-            curl \
-              -X DELETE \
-              -H "Accept: application/vnd.github+json" \
-              -H "Authorization: Bearer ${{ secrets.PAT }}" \
-              https://api.github.com/repos/hirata11/convert/releases/$release
-        - run: |
-            sleep 1m
-            curl -sL https://api.github.com/repos/hirata11/convert/releases/latest | jq -r ".tag_name"
-        - name: get lastest release
-          id: lastestRelease
-          run: echo "::set-output name=releasename::$(curl -sL https://api.github.com/repos/hirata11/convert/releases/latest | jq -r ".tag_name")"
-        - run: echo ${{ steps.lastestRelease.outputs.releasename }}
         - name: Checkout private tools
           uses: actions/checkout@v3
           with:
             repository: hirata11/devops-template
-            token: ${{ secrets.PAT }} # `GH_PAT` is a secret that contains your PAT
+            token: ${{ secrets.PAT }}  
             path: template
-
+        - id: latestdel
+          uses: thebritican/fetch-latest-release@v2.0.0
+          with:
+            github_token: ${{ secrets.PAT }} 
+        - name: templateRollback
+          uses: ./template/rollback
+          with:
+            token: ${{ secrets.PAT }} 
+            tag: ${{ steps.latestdel.outputs.tag_name }} 
+            app: ${{ env.IMAGE }}        
+        - name: get lastest release
+          id: lastestRelease
+          run: echo "::set-output name=releasename::$(curl -sL https://api.github.com/repos/hirata11/${{ inputs.app }}/releases/latest | jq -r ".tag_name")"
         - name: templateDeploy  
-          uses: ./template/deploy
+          uses: ./template/deploy/api
           with:
             AZURE_CREDENTIALS:  ${{ secrets.AZURE_CREDENTIALS }}
             IMAGE: ${{ env.IMAGE }}
             ACR: ${{ env.ACR }}
             TAG: ${{ steps.lastestRelease.outputs.releasename }}   
-
   DeployProdOk:
       runs-on: ubuntu-latest
       needs: deploy-prd
@@ -203,8 +144,7 @@ jobs:
         - id: latest
           uses: thebritican/fetch-latest-release@v2.0.0
           with:
-            github_token: ${{ secrets.PAT }}
-        
+            github_token: ${{ secrets.PAT }}        
         - name:
           uses: tukasz/direct-merge-action@master
           with:
