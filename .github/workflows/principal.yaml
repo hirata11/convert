@@ -71,7 +71,7 @@ jobs:
           commit-message: "merge dev to release-${{ steps.latest.outputs.tag_name }}"
 
       - name: templateBuiid  
-        uses: ./template/build
+        uses: ./template/build/build.yaml
         with:
           REGISTRY_LOGIN_SERVER:  ${{ secrets.REGISTRY_LOGIN_SERVER }}
           REGISTRY_USERNAME: ${{ secrets.REGISTRY_USERNAME }}
