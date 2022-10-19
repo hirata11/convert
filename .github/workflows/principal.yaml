@@ -126,7 +126,7 @@ jobs:
           with:
             token: ${{ secrets.PAT }} 
             tag: ${{ steps.latestdel.outputs.tag_name }} 
-              app: ${{ env.IMAGE }}
+            app: ${{ env.IMAGE }}
 
         - name: getreleaseid  
           run: |
