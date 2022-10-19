@@ -125,13 +125,13 @@ jobs:
           run: |
             release=$(curl \
               -H "Accept: application/vnd.github+json" \
-              -H "Authorization: Bearer $${{ inputs.token }}" \
+              -H "Authorization: Bearer ${{ secrets.PAT }} " \
               https://api.github.com/repos/hirata11/${{ env.IMAGE }}/releases/tags/${{ steps.latestdel.outputs.tag_name }}  | jq '.id')
             echo $release
             curl \
               -X DELETE \
               -H "Accept: application/vnd.github+json" \
-              -H "Authorization: Bearer ${{ inputs.token }}" \
+              -H "Authorization: Bearer ${{ secrets.PAT }} " \
               https://api.github.com/repos/hirata11/${{ env.IMAGE }}/releases/$release
           shell: bash
 
