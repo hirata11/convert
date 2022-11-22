@@ -6,7 +6,7 @@ on:
   push:
     branches: 
       - development
-      - "release-**"    
+      - "release*"    
  
 env:
   DEPLOYMENT_NAME: api-4hub-faas
